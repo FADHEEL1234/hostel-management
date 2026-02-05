@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Hostels | Hostel Booking{% endblock %}
+
+{% block content %}
+<h1>Find your next hostel</h1>
+<div class="hero-image">
+    <img src="/static/images/host.jpg" alt="Sunlit hostel dorm room with wooden bunk beds" />
+</div>
+
+<div class="grid">
+    {% for hostel in hostels %}
+        <article class="card">
+            {% if hostel.image %}
+                <img src="{{ hostel.image.url }}" alt="{{ hostel.name }}" />
+            {% endif %}
+            <div class="card-body">
+                <h2>{{ hostel.name }}</h2>
+                <p class="muted">{{ hostel.city }}</p>
+                <p>{{ hostel.description|truncatewords:24 }}</p>
+                {% if hostel.amenities.all %}
+                    <div class="tags">
+                        {% for amenity in hostel.amenities.all %}
+                            <span>{{ amenity.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <a class="btn" href="{% url 'hostel_detail' hostel.id %}">View details</a>
+            </div>
+        </article>
+    {% empty %}
+        <p>No hostels yet. Add some in the admin panel.</p>
+    {% endfor %}
+</div>
+{% endblock %}

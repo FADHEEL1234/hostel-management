@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmed | Hostel Booking{% endblock %}
+
+{% block content %}
+<h1>Booking confirmed</h1>
+<p>Thanks {{ booking.guest_name }}! Your reservation at {{ booking.hostel.name }} is confirmed.</p>
+<ul class="summary">
+    <li>Room: {{ booking.room.name }}</li>
+    <li>Dates: {{ booking.check_in }} to {{ booking.check_out }}</li>
+    <li>Guests: {{ booking.guests }}</li>
+    <li>Total: ${{ booking.total_price }}</li>
+</ul>
+{% if booking.is_paid %}
+    <p class="muted">Payment received on {{ booking.paid_at|date:"M d, Y H:i" }}.</p>
+    <a class="btn" href="{% url 'booking_receipt' booking.id %}">Download receipt</a>
+{% endif %}
+<a class="btn" href="/bookings/">View all bookings</a>
+{% endblock %}

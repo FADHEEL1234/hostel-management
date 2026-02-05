@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Log in | Hostel Booking{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <section class="auth-card-neo">
+        <div class="auth-avatar"></div>
+        <h1>USER LOGIN</h1>
+
+        <form method="post" class="auth-form" action="{% url 'login' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="input-row">
+                <span class="input-icon">&#9993;</span>
+                {{ form.username }}
+            </div>
+            <div class="input-row">
+                <span class="input-icon">&#128274;</span>
+                {{ form.password }}
+            </div>
+            <div class="auth-meta">
+                <label class="remember">
+                    <input type="checkbox" disabled />
+                    Remember
+                </label>
+                <span class="muted">Forgot password?</span>
+            </div>
+            <button class="btn btn-block" type="submit">LOGIN</button>
+        </form>
+
+        <div class="auth-footer">
+            <span class="muted">Don't have an account?</span>
+            <a class="auth-link" href="{% url 'signup' %}">Register</a>
+        </div>
+    </section>
+</div>
+{% endblock %}

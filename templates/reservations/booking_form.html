@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Book {{ hostel.name }} | Hostel Booking{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{% url 'hostel_detail' hostel.id %}">Back to hostel</a>
+<h1>Book {{ hostel.name }}</h1>
+
+<form method="post" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Confirm booking</button>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ hostel.name }} | Hostel Booking{% endblock %}
+
+{% block content %}
+<a class="back-link" href="/">Back to hostels</a>
+<h1>{{ hostel.name }}</h1>
+<p class="muted">{{ hostel.city }} ? {{ hostel.address }}</p>
+<p>{{ hostel.description }}</p>
+
+<h2>Rooms</h2>
+<div class="grid">
+    {% for room in rooms %}
+        <article class="card">
+            {% if room.image %}
+                <img src="{{ room.image.url }}" alt="{{ room.name }}" />
+            {% endif %}
+            <div class="card-body">
+                <h3>{{ room.name }}</h3>
+                <p>{{ room.beds }} beds ? {% if room.is_private %}Private{% else %}Shared{% endif %}</p>
+                <p class="price">${{ room.price_per_night }} / night</p>
+            </div>
+        </article>
+    {% empty %}
+        <p>No rooms available yet.</p>
+    {% endfor %}
+</div>
+
+<a class="btn" href="{% url 'book_hostel' hostel.id %}">Book this hostel</a>
+{% endblock %}

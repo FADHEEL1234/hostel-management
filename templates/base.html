@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Hostel Booking{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="site-header">
+        <div class="container">
+            <a class="logo" href="/">Hostel Booking</a>
+            <nav class="nav">
+                <a href="/">Hostels</a>
+                <a href="/bookings/">Bookings</a>
+                {% if user.is_authenticated %}
+                    <span class="nav-user">Hi, {{ user.username }}</span>
+                    <form class="nav-logout" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="link-button">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Log in</a>
+                    <a href="{% url 'signup' %}">Sign up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Fadheel All rights reserved@2026.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Bookings | Hostel Booking{% endblock %}
+
+{% block content %}
+<h1>Recent bookings</h1>
+
+<div class="grid">
+    {% for booking in bookings %}
+        <article class="card">
+            <div class="card-body">
+                <h2>{{ booking.hostel.name }}</h2>
+                <p>{{ booking.room.name }}</p>
+                <p class="muted">{{ booking.check_in }} ? {{ booking.check_out }}</p>
+                <p>Guest: {{ booking.guest_name }}</p>
+                <p class="price">${{ booking.total_price }}</p>
+                {% if booking.is_paid %}
+                    <p class="muted">Paid · {{ booking.paid_at|date:"M d, Y H:i" }}</p>
+                    <a class="btn" href="{% url 'booking_receipt' booking.id %}">Download receipt</a>
+                {% else %}
+                    <a class="btn" href="{% url 'booking_payment' booking.id %}">Make payment</a>
+                {% endif %}
+            </div>
+        </article>
+    {% empty %}
+        <p>No bookings yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

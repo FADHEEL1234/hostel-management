@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Payment | Hostel Booking{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{% url 'booking_success' booking.id %}">Back to booking</a>
+<h1>Payment for {{ booking.hostel.name }}</h1>
+<p class="muted">Total amount: ${{ booking.total_price }}</p>
+
+<form method="post" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Confirm payment</button>
+</form>
+{% endblock %}
