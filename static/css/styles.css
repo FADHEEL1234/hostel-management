@@ -8,13 +8,15 @@
     --shadow: rgba(16, 24, 40, 0.08);
 }
 
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: "Georgia", "Times New Roman", serif;
+    font-family: "Poppins", "Segoe UI", Tahoma, sans-serif;
     color: var(--ink);
     background: radial-gradient(circle at top, #2c7a7b 0%, #1f4f4f 55%, #173637 100%);
 }
@@ -263,10 +265,10 @@ h1, h2, h3 {
 }
 
 .auth-card-neo {
-    width: min(360px, 92%);
+    width: min(320px, 90%);
     background: #e7f1fb;
     border-radius: 12px;
-    padding: 2.2rem 2rem 1.8rem;
+    padding: 1.8rem 1.6rem 1.5rem;
     color: #2e4f6a;
     box-shadow: 0 22px 40px rgba(20, 52, 85, 0.25);
     text-align: center;
@@ -401,4 +403,201 @@ body.auth-page .btn:hover {
 
 .summary li {
     margin-bottom: 0.4rem;
+}
+
+.dash-shell {
+    display: grid;
+    gap: 1.8rem;
+}
+
+.dash-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.dash-actions .btn {
+    margin-top: 0;
+}
+
+.dash-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.2rem;
+}
+
+.stat-card {
+    border-radius: 14px;
+    padding: 1.2rem 1.3rem;
+    color: #fff;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+}
+
+.stat-blue {
+    background: linear-gradient(135deg, #2f7dd1, #1f4c8f);
+}
+
+.stat-green {
+    background: linear-gradient(135deg, #2fb35d, #1e7b41);
+}
+
+.stat-amber {
+    background: linear-gradient(135deg, #f0b429, #d97706);
+}
+
+.stat-red {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.stat-label {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.stat-value {
+    margin: 0.3rem 0 0.2rem;
+    font-size: 1.8rem;
+}
+
+.stat-meta {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.85;
+}
+
+.dash-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.4rem;
+}
+
+.panel {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 10px 24px var(--shadow);
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.panel-head h3 {
+    margin: 0;
+}
+
+.chart-canvas {
+    height: 200px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-line {
+    position: absolute;
+    height: 140px;
+    width: 110%;
+    border-radius: 999px;
+    opacity: 0.8;
+}
+
+.chart-line-a {
+    background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.8), transparent 60%);
+    left: -10%;
+    top: 30%;
+}
+
+.chart-line-b {
+    background: radial-gradient(circle at 60% 40%, rgba(14, 116, 144, 0.7), transparent 60%);
+    left: -5%;
+    top: 55%;
+}
+
+.map-canvas {
+    height: 200px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 100%);
+    display: grid;
+    place-items: center;
+    color: #e0f2fe;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-glow {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    filter: blur(4px);
+}
+
+.list-panel {
+    display: grid;
+    gap: 1rem;
+}
+
+.hostel-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.hostel-row {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 1.2rem;
+    padding: 1rem;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.hostel-media img {
+    width: 100%;
+    height: 100%;
+    max-height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
+.hostel-placeholder {
+    height: 90px;
+    border-radius: 10px;
+    background: #e2e8f0;
+    color: #64748b;
+    display: grid;
+    place-items: center;
+    font-size: 0.85rem;
+}
+
+.hostel-info h4 {
+    margin: 0 0 0.3rem;
+}
+
+.hostel-actions {
+    display: grid;
+    align-content: center;
+}
+
+.btn.btn-ghost {
+    color: #2f6b9b;
+}
+
+@media (max-width: 720px) {
+    .hostel-row {
+        grid-template-columns: 1fr;
+    }
+
+    .hostel-actions {
+        justify-items: start;
+    }
 }
