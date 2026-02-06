@@ -2,6 +2,7 @@ import os
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -106,59 +107,95 @@ def booking_receipt(request, booking_id):
     c = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
-    c.setFillColor(colors.HexColor("#1b2a3a"))
-    c.rect(0, height - 95, width, 95, fill=1, stroke=0)
+    # Layout inspired by the provided receipt template.
+    page_margin = 36
+    receipt_width = 300
+    receipt_height = height - 2 * page_margin
+    receipt_x = page_margin
+    receipt_y = page_margin
+    aside_x = receipt_x + receipt_width + 28
 
+    # Receipt card
+    c.setFillColor(colors.white)
+    c.setStrokeColor(colors.HexColor("#d5dbe3"))
+    c.setLineWidth(1)
+    c.roundRect(receipt_x, receipt_y, receipt_width, receipt_height, 6, fill=1, stroke=1)
+
+    # Logo + header
     logo_path = os.path.join(settings.BASE_DIR, "static", "images", "logo.png")
     if os.path.exists(logo_path):
-        c.drawImage(logo_path, 40, height - 85, width=70, height=70, preserveAspectRatio=True, mask="auto")
-
-    c.setFillColor(colors.white)
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(130, height - 55, "STUDENT HUB HOSTEL")
-    c.setFont("Helvetica", 10)
-    c.drawString(130, height - 72, "Booking Receipt")
-
-    c.setFillColor(colors.HexColor("#1b2a3a"))
+        c.drawImage(
+            logo_path,
+            receipt_x + 16,
+            height - 110,
+            width=58,
+            height=58,
+            preserveAspectRatio=True,
+            mask="auto",
+        )
+    c.setFillColor(colors.HexColor("#2d3748"))
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(40, height - 130, "Receipt Details")
-
-    c.setStrokeColor(colors.HexColor("#d3dce6"))
-    c.setLineWidth(1)
-    c.line(40, height - 138, width - 40, height - 138)
-
-    details = [
-        ("Receipt No:", booking.receipt_number),
-        ("Date:", booking.paid_at.strftime("%Y-%m-%d %H:%M")),
-        ("Guest:", booking.guest_name),
-        ("Email:", booking.guest_email),
-        ("Hostel:", booking.hostel.name),
-        ("Room:", booking.room.name),
-        ("Dates:", f"{booking.check_in} to {booking.check_out}"),
-        ("Nights:", str(booking.nights)),
-    ]
-
-    y = height - 165
-    c.setFont("Helvetica", 10.5)
-    for label, value in details:
-        c.setFillColor(colors.HexColor("#5a6b7b"))
-        c.drawString(40, y, label)
-        c.setFillColor(colors.HexColor("#1b2a3a"))
-        c.drawString(130, y, str(value))
-        y -= 18
-
-    c.setFillColor(colors.HexColor("#f4f7fb"))
-    c.rect(40, y - 30, width - 80, 40, fill=1, stroke=0)
-    c.setFillColor(colors.HexColor("#1b2a3a"))
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y - 10, "Total Paid")
-    c.setFont("Helvetica-Bold", 14)
-    c.drawRightString(width - 50, y - 10, format_tzs(booking.amount_paid))
-
+    c.drawString(receipt_x + 80, height - 70, "STUDENT HUB HOSTEL")
     c.setFont("Helvetica", 9)
-    c.setFillColor(colors.HexColor("#8a97a6"))
-    c.drawString(40, 60, "Thank you for choosing Student Hub Hostel.")
-    c.drawRightString(width - 40, 60, "support@studenthubhostel.com")
+    c.setFillColor(colors.HexColor("#4a5568"))
+    c.drawString(receipt_x + 80, height - 84, "PAYMENT RECEIPT")
+
+    # Key details block
+    c.setFont("Helvetica", 9)
+    c.setFillColor(colors.HexColor("#4a5568"))
+    c.drawString(receipt_x + 16, height - 135, f"Receipt #: {booking.receipt_number}")
+    c.drawString(receipt_x + 16, height - 150, f"Date: {booking.paid_at.strftime('%Y-%m-%d %H:%M')}")
+
+    # Table header
+    table_top = height - 185
+    c.setFillColor(colors.HexColor("#edf2f7"))
+    c.rect(receipt_x + 12, table_top - 20, receipt_width - 24, 20, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#2d3748"))
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(receipt_x + 18, table_top - 14, "Description")
+    c.drawRightString(receipt_x + receipt_width - 18, table_top - 14, "Amount")
+
+    # Table rows
+    c.setFont("Helvetica", 9)
+    c.setFillColor(colors.HexColor("#2d3748"))
+    row_y = table_top - 38
+    line_gap = 16
+    c.drawString(receipt_x + 18, row_y, f"Hostel: {booking.hostel.name}")
+    c.drawRightString(receipt_x + receipt_width - 18, row_y, format_tzs(booking.amount_paid))
+    row_y -= line_gap
+    c.setFillColor(colors.HexColor("#4a5568"))
+    c.drawString(receipt_x + 18, row_y, f"Room: {booking.room.name}")
+    row_y -= line_gap
+    c.drawString(receipt_x + 18, row_y, f"Dates: {booking.check_in} to {booking.check_out}")
+    row_y -= line_gap
+    c.drawString(receipt_x + 18, row_y, f"Nights: {booking.nights}")
+    row_y -= line_gap
+    c.drawString(receipt_x + 18, row_y, f"Guest: {booking.guest_name}")
+    row_y -= line_gap
+    c.drawString(receipt_x + 18, row_y, f"Email: {booking.guest_email}")
+
+    # Total section
+    total_y = receipt_y + 70
+    c.setFillColor(colors.HexColor("#f7fafc"))
+    c.rect(receipt_x + 12, total_y, receipt_width - 24, 32, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#2d3748"))
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(receipt_x + 18, total_y + 10, "TOTAL PAID")
+    c.drawRightString(receipt_x + receipt_width - 18, total_y + 10, format_tzs(booking.amount_paid))
+
+    # Footer note
+    c.setFont("Helvetica", 8.5)
+    c.setFillColor(colors.HexColor("#718096"))
+    c.drawString(receipt_x + 16, receipt_y + 30, "Payment confirmed. Thank you for your booking.")
+
+    # Right-side panel (title + tagline)
+    c.setFillColor(colors.HexColor("#2d3748"))
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(aside_x, height - 120, "Payment Receipt")
+    c.setFont("Helvetica", 9.5)
+    c.setFillColor(colors.HexColor("#4a5568"))
+    c.drawString(aside_x, height - 150, "Keep this receipt for your records.")
+    c.drawString(aside_x, height - 165, "We appreciate your stay.")
 
     c.showPage()
     c.save()
@@ -171,6 +208,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
+            messages.success(request, "Registration successful. Welcome!")
             return redirect("home")
     else:
         form = SignupForm()
@@ -191,6 +229,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
+            messages.success(request, f"Welcome, {user.username}!")
             if user.is_staff or user.is_superuser:
                 return redirect("/admin/")
             return redirect("home")
