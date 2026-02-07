@@ -9,7 +9,7 @@
     <li>Room: {{ booking.room.name }}</li>
     <li>Dates: {{ booking.check_in }} to {{ booking.check_out }}</li>
     <li>Guests: {{ booking.guests }}</li>
-    <li>Total: ${{ booking.total_price }}</li>
+    <li>Total: {{ booking.total_price }} TZS</li>
 </ul>
 {% if booking.is_paid %}
     <p class="muted">Payment received on {{ booking.paid_at|date:"M d, Y H:i" }}.</p>

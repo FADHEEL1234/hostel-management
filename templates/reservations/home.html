@@ -3,98 +3,118 @@
 {% block title %}Hostels | Hostel Booking{% endblock %}
 
 {% block content %}
-<div class="dash-shell">
-    <div class="dash-header">
-        <div>
-            <h1>Hostel Dashboard</h1>
-            <p class="muted">Overview of your properties and recent activity.</p>
+<div class="md-shell">
+    <aside class="md-sidebar">
+        <div class="md-brand">
+            <span class="md-pill"></span>
+            <h1>Hostel Manager</h1>
         </div>
-        <div class="dash-actions">
-            <a class="btn" href="/bookings/">View bookings</a>
+        <nav class="md-nav">
+            <a class="active" href="/">Dashboard</a>
+            <a href="/bookings/">Bookings</a>
+            <a href="/bookings/">Payments</a>
+            <a href="/bookings/">Reports</a>
+            <a href="/bookings/">Support</a>
+        </nav>
+        <div class="md-sidebar-foot">
+            <p class="muted">TZS · East Africa Time</p>
+            <a class="btn btn-ghost" href="/bookings/">Open bookings</a>
         </div>
-    </div>
+    </aside>
 
-    <div class="dash-stats">
-        <article class="stat-card stat-blue">
-            <p class="stat-label">Total hostels</p>
-            <h2 class="stat-value">{{ hostels|length }}</h2>
-            <p class="stat-meta">Active listings</p>
-        </article>
-        <article class="stat-card stat-green">
-            <p class="stat-label">Weekly bookings</p>
-            <h2 class="stat-value">24</h2>
-            <p class="stat-meta">Last 7 days</p>
-        </article>
-        <article class="stat-card stat-amber">
-            <p class="stat-label">Avg. stay</p>
-            <h2 class="stat-value">3.2</h2>
-            <p class="stat-meta">Nights per guest</p>
-        </article>
-        <article class="stat-card stat-red">
-            <p class="stat-label">Pending payments</p>
-            <h2 class="stat-value">5</h2>
-            <p class="stat-meta">Needs follow-up</p>
-        </article>
-    </div>
-
-    <div class="dash-panels">
-        <section class="panel chart-panel">
-            <div class="panel-head">
-                <h3>Occupancy trend</h3>
-                <span class="muted">Last 30 days</span>
+    <section class="md-main">
+        <div class="md-links">
+            <span>Quick links:</span>
+            <a href="{{ request.scheme }}://{{ request.get_host }}/">Home</a>
+            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'login' %}">Login</a>
+        </div>
+        <header class="md-header">
+            <div>
+                <h2>Dashboard</h2>
+                <p class="muted">Overview of bookings and guest activity.</p>
             </div>
-            <div class="chart-canvas">
-                <div class="chart-line chart-line-a"></div>
-                <div class="chart-line chart-line-b"></div>
+            <div class="md-header-actions">
+                <a class="btn" href="/bookings/">View bookings</a>
+            </div>
+        </header>
+
+        <div class="md-metrics">
+            <article class="md-metric metric-blue">
+                <p>Total hostels</p>
+                <h3>{{ hostels|length }}</h3>
+                <span>Active listings</span>
+            </article>
+            <article class="md-metric metric-teal">
+                <p>Weekly bookings</p>
+                <h3>53</h3>
+                <span>Last 7 days</span>
+            </article>
+            <article class="md-metric metric-amber">
+                <p>Avg. stay</p>
+                <h3>4.4</h3>
+                <span>Nights per guest</span>
+            </article>
+            <article class="md-metric metric-pink">
+                <p>Pending payments</p>
+                <h3>65</h3>
+                <span>Needs follow-up</span>
+            </article>
+        </div>
+
+        <div class="md-panels">
+            <section class="md-panel">
+                <div class="md-panel-head">
+                    <h4>Occupancy</h4>
+                    <span class="muted">Last 30 days</span>
+                </div>
+                <div class="md-chart">
+                    <div class="md-wave md-wave-a"></div>
+                    <div class="md-wave md-wave-b"></div>
+                </div>
+            </section>
+            <section class="md-panel">
+                <div class="md-panel-head">
+                    <h4>Guest Map</h4>
+                    <span class="muted">Top regions</span>
+                </div>
+                <div class="md-map">
+                    <div class="md-blob md-blob-a"></div>
+                    <div class="md-blob md-blob-b"></div>
+                    <div class="md-blob md-blob-c"></div>
+                    <p class="muted">Regional interest overview</p>
+                </div>
+            </section>
+        </div>
+
+        <section class="md-panel md-list">
+            <div class="md-panel-head">
+                <h4>Hostel Listings</h4>
+                <span class="muted">Manage and update details</span>
+            </div>
+            <div class="md-rows">
+                {% for hostel in hostels %}
+                    <article class="md-row">
+                        <div class="md-thumb">
+                            {% if hostel.image %}
+                                <img src="{{ hostel.image.url }}" alt="{{ hostel.name }}" />
+                            {% else %}
+                                <div class="md-thumb-placeholder">No image</div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h5>{{ hostel.name }}</h5>
+                            <p class="muted">{{ hostel.city }}</p>
+                            <p>{{ hostel.description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="md-row-action">
+                            <a class="btn btn-ghost" href="{% url 'hostel_detail' hostel.id %}">Open</a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p>No hostels yet. Add some in the admin panel.</p>
+                {% endfor %}
             </div>
         </section>
-        <section class="panel map-panel">
-            <div class="panel-head">
-                <h3>Guest origins</h3>
-                <span class="muted">Top regions</span>
-            </div>
-            <div class="map-canvas">
-                <div class="map-glow"></div>
-                <p class="muted">Regional heatmap preview</p>
-            </div>
-        </section>
-    </div>
-
-    <section class="panel list-panel">
-        <div class="panel-head">
-            <h3>Hostel listings</h3>
-            <span class="muted">Manage and update details</span>
-        </div>
-        <div class="hostel-list">
-            {% for hostel in hostels %}
-                <article class="hostel-row">
-                    <div class="hostel-media">
-                        {% if hostel.image %}
-                            <img src="{{ hostel.image.url }}" alt="{{ hostel.name }}" />
-                        {% else %}
-                            <div class="hostel-placeholder">No image</div>
-                        {% endif %}
-                    </div>
-                    <div class="hostel-info">
-                        <h4>{{ hostel.name }}</h4>
-                        <p class="muted">{{ hostel.city }}</p>
-                        <p>{{ hostel.description|truncatewords:20 }}</p>
-                        {% if hostel.amenities.all %}
-                            <div class="tags">
-                                {% for amenity in hostel.amenities.all %}
-                                    <span>{{ amenity.name }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="hostel-actions">
-                        <a class="btn btn-ghost" href="{% url 'hostel_detail' hostel.id %}">View</a>
-                    </div>
-                </article>
-            {% empty %}
-                <p>No hostels yet. Add some in the admin panel.</p>
-            {% endfor %}
-        </div>
     </section>
 </div>
 {% endblock %}
